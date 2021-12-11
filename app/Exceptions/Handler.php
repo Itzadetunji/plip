@@ -9,6 +9,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\Exceptions\ThrottleRequestsException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -66,8 +67,8 @@ class Handler extends ExceptionHandler
             return ApiResponse::unauthorized($e->getMessage());
         } elseif ($e instanceof ValidationException) {
             return ApiResponse::validation($e->getMessage(), $e->errors());
-        } else {
-            return ApiResponse::abort(400, $e->getMessage());
+        } elseif ($e instanceof ThrottleRequestsException) {
+            return ApiResponse::abort(429, $e->getMessage());
         }
 
         return parent::render($request, $e);
