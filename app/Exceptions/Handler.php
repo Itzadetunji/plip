@@ -2,8 +2,15 @@
 
 namespace App\Exceptions;
 
-use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Throwable;
+use Illuminate\Http\Request;
+use App\Responders\ApiResponse;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Validation\ValidationException;
+use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class Handler extends ExceptionHandler
 {
@@ -37,5 +44,32 @@ class Handler extends ExceptionHandler
         $this->reportable(function (Throwable $e) {
             //
         });
+    }
+
+    /**
+     * Render an exception into an HTTP response.
+     *
+     * @param Request $request
+     * @param Throwable $e
+     * @return JsonResponse|Response|\Symfony\Component\HttpFoundation\Response
+     * @throws Throwable
+     */
+    public function render($request, Throwable $e)
+    {
+        if ($e instanceof ModelNotFoundException) {
+            return ApiResponse::notFound();
+        } elseif ($e instanceof NotFoundHttpException) {
+            return ApiResponse::notFound();
+        } elseif ($e->getCode() == 426) {
+            return ApiResponse::upgrade($e->getMessage());
+        } elseif ($e instanceof AuthorizationException) {
+            return ApiResponse::unauthorized($e->getMessage());
+        } elseif ($e instanceof ValidationException) {
+            return ApiResponse::validation($e->getMessage(), $e->errors());
+        } else {
+            return ApiResponse::abort(400, $e->getMessage());
+        }
+
+        return parent::render($request, $e);
     }
 }
