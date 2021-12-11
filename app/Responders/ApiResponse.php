@@ -139,7 +139,7 @@ class ApiResponse
      */
     public static function abort(?int $statusCode = 400, ?string $message = 'Malformed request'): JsonResponse
     {
-        return self::failure($message, null, [], $statusCode)->send();
+        return self::failure($message, null, [], $statusCode);
     }
 
     /**
