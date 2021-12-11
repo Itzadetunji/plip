@@ -66,8 +66,6 @@ class Handler extends ExceptionHandler
             return ApiResponse::unauthorized($e->getMessage());
         } elseif ($e instanceof ValidationException) {
             return ApiResponse::validation($e->getMessage(), $e->errors());
-        } else {
-            return ApiResponse::abort(400, $e->getMessage());
         }
 
         return parent::render($request, $e);
