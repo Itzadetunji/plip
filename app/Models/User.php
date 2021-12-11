@@ -61,10 +61,10 @@ class User extends Authenticatable
         return $value;
     }
 
-    public function setPhoneAttribute($value)
+    public function getPhoneAttribute($value)
     {
         if (!empty($value)) {
-           return (string) PhoneNumber::make($this->phone, $this->phone_country);
+           return (string) PhoneNumber::make($value, $this->phone_country);
         }
 
         return $value;
