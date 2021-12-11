@@ -23,6 +23,7 @@ class RegisterController extends Controller
             DB::beginTransaction();
             $fillable = $request->validated();
             $fillable['email_verified_at'] = now();
+            $fillable['password'] = bcrypt($request->password);
 
             User::create($fillable);
 
