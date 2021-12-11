@@ -14,6 +14,7 @@ return [
     */
 
     'token' => 'Token is invalid or expired.',
+    'phone' => 'The :attribute field contains an invalid number.',
     'failed' => 'These credentials do not match our records.',
     'password' => 'The provided password is incorrect.',
     'throttle' => 'Too many login attempts. Please try again in :seconds seconds.',

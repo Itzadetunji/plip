@@ -2,8 +2,8 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Validation\Rules\Password;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rules\Password;
 
 class RegisterRequest extends FormRequest
 {
@@ -25,18 +25,20 @@ class RegisterRequest extends FormRequest
     public function rules()
     {
         return [
-            'first_name' => "string|required|regex:/^[\pL\s\-]+$/u|max:150",
-            'middle_name' => "string|nullable|regex:/^[\pL\s\-]+$/u|max:150",
-            'last_name' => "string|required|regex:/^[\pL\s\-]+$/u|max:150",
-            'nick_name' => "string|nullable|regex:/^[\pL\s\-]+$/u|max:100",
-            'email' => "email|required|unique:users,email",
+            'first_name'    => "string|required|regex:/^[\pL\s\-]+$/u|max:150",
+            'middle_name'   => "string|nullable|regex:/^[\pL\s\-]+$/u|max:150",
+            'last_name'     => "string|required|regex:/^[\pL\s\-]+$/u|max:150",
+            'nick_name'     => "string|nullable|regex:/^[\pL\s\-]+$/u|max:100",
+            'email'         => "email|required|unique:users,email",
             'password'      => [
                 'required',
                 Password::min(6)
                     ->mixedCase()
                     ->letters()
-                    ->numbers()
-            ]
+                    ->numbers(),
+            ],
+            'phone'         => "phone|nullable|unique:users,phone",
+            'phone_country' => "required_with:phone",
         ];
     }
 }
