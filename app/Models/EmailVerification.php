@@ -7,10 +7,12 @@ use Illuminate\Database\Eloquent\Model;
 use App\traits\SimpleTokenGeneratorTrait;
 use App\Notifications\EmailTokenVerification;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Notifications\Notifiable;
 
 class EmailVerification extends Model
 {
     use HasFactory;
+    use Notifiable;
     use SimpleTokenGeneratorTrait;
     const EXPIRATION_TIME = 15;
 

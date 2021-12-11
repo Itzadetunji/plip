@@ -30,8 +30,8 @@ class EmailTokenVerificationRequest extends FormRequest
                 "required",
                 'digits:6',
                 Rule::exists('email_verifications')->where(function ($query) {
-                    $query->where('email', request()->email)
-                        ->where('email', request()->token);
+                    return $query->where('email', request()->email)
+                        ->where('token', request()->token);
                 }),
             ],
         ];
