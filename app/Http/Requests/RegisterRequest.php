@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Models\EmailVerification;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Password;
@@ -35,8 +36,8 @@ class RegisterRequest extends FormRequest
                 "required",
                 "unique:users,email",
                 Rule::exists('email_verifications')->where(function ($query) {
-                    $query->where('email', request()->email)
-                        ->whereNotNull('email_verified');
+                    return $query->where('email', request()->email)
+                        ->whereNotNull('email_verified_at');
                 }),
             ],
             'password'      => [

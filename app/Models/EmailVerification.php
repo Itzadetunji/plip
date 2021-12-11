@@ -3,9 +3,8 @@
 namespace App\Models;
 
 use Carbon\Carbon;
-use SimpleTokenGeneratorTrait;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Notification;
+use App\traits\SimpleTokenGeneratorTrait;
 use App\Notifications\EmailTokenVerification;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 

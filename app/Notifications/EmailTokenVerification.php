@@ -8,10 +8,9 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class EmailTokenVerification extends Notification
+class EmailTokenVerification extends Notification implements ShouldQueue
 {
     use Queueable;
-    use ShouldQueue;
 
     /**
      * Create a new notification instance.

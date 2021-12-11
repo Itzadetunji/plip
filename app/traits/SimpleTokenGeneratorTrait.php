@@ -1,5 +1,7 @@
 <?php
 
+namespace App\traits;
+
 trait SimpleTokenGeneratorTrait
 {
 
