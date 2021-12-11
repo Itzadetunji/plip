@@ -20,8 +20,7 @@ class UserFactory extends Factory
             'middle_name' => "A",
             'nick_name' => $this->faker->word(),
             'email' => $this->faker->unique()->safeEmail(),
-            'email_verified_at' => now(),
-            'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
+            'password' => bcrypt("Password22"),
         ];
     }
 
@@ -30,11 +29,11 @@ class UserFactory extends Factory
      *
      * @return \Illuminate\Database\Eloquent\Factories\Factory
      */
-    public function unverified()
+    public function emailVerified()
     {
         return $this->state(function (array $attributes) {
             return [
-                'email_verified_at' => null,
+                'email_verified_at' => now(),
             ];
         });
     }

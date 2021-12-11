@@ -42,6 +42,7 @@ class EmailTokenVerification extends Notification implements ShouldQueue
     public function toMail($notifiable)
     {
         return (new MailMessage)
+                    ->subject(__("auth.email_verification_subject"))
                     ->line(__("auth.email_verification", ["token" => $notifiable->token]))
                     ->line('Thank you!');
     }

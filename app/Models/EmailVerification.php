@@ -6,8 +6,10 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use App\traits\SimpleTokenGeneratorTrait;
 use App\Notifications\EmailTokenVerification;
+use App\Notifications\TestNotification;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Notification;
 
 class EmailVerification extends Model
 {
@@ -45,13 +47,8 @@ class EmailVerification extends Model
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
-
-    public function routeNotificationForMail($notification): string
-    {
-        return $this->email;
-    }
-
-    public function getUnverifiedEmail($data): self
+    
+    public function getUnverifiedEmail($data)
     {
         return EmailVerification::where('token', $data['token'])
             ->where('email', $data['email'])
@@ -68,27 +65,27 @@ class EmailVerification extends Model
         return !is_null($this->verified_at);
     }
 
-    public function resendVerificationToken(): self
+    public function resendVerificationToken()
     {
         if ($this->isExpired()) {
             $this->token = $this->generateToken();
             $this->email_verified_at = null;
             $this->save();
-        }
 
-        $this->notify(new EmailTokenVerification($this));
+            $this->notify(new EmailTokenVerification());
+        };
 
         return $this;
     }
 
-    public function newVerificationEmail($email): self
+    public function newVerificationEmail($email)
     {
         $emailVerification = EmailVerification::create([
             'email' => $email,
             'token' => $this->generateToken()
         ]);
 
-        $this->notify(new EmailTokenVerification($emailVerification));
+        $emailVerification->notify(new EmailTokenVerification());
 
         return $emailVerification;
     }
