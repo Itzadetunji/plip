@@ -24,9 +24,9 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::prefix('auth')->name('auth.')->group(function () {
-    Route::post('register', [RegisterController::class])->name('user.register');
-    Route::post('login', [LoginController::class])->name('user.login');
-    Route::post('logout', [LogoutController::class])->name('user.logout');
-    Route::post('email', [EmailVerificationController::class, 'sendEmailToken'])->name('email.token');
+    Route::post('register', RegisterController::class)->name('user.register');
+    Route::post('login', LoginController::class)->name('user.login');
+    Route::post('logout', LogoutController::class)->name('user.logout');
+    Route::post('email', [EmailVerificationController::class, 'sendEmailToken'])->middleware(['throttle:email_verification'])->name('email.token');
     Route::post('email/verify', [EmailVerificationController::class, 'verifyEmail'])->name('email.verify');
 });
