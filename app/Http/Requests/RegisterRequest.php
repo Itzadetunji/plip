@@ -30,7 +30,7 @@ class RegisterRequest extends FormRequest
             'first_name'    => "string|required|regex:/^[\pL\s\-]+$/u|max:150",
             'middle_name'   => "string|nullable|regex:/^[\pL\s\-]+$/u|max:150",
             'last_name'     => "string|required|regex:/^[\pL\s\-]+$/u|max:150",
-            'nick_name'     => "string|nullable|regex:/^[\pL\s\-]+$/u|max:100",
+            'nick_name'     => "string|nullable|max:100",
             'email'         => [
                 "email",
                 "required",
@@ -49,6 +49,7 @@ class RegisterRequest extends FormRequest
             ],
             'phone'         => "phone|nullable|unique:users,phone",
             'phone_country' => "required_with:phone",
+            'device_name'   => 'required|string',
         ];
     }
 

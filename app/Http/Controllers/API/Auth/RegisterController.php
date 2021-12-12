@@ -25,10 +25,15 @@ class RegisterController extends Controller
             $fillable['email_verified_at'] = now();
             $fillable['password'] = bcrypt($request->password);
 
-            User::create($fillable);
+            $user = User::create($fillable);
+            $token = $user->createToken($request->device_name)->plainTextToken;
+            $cookie = cookie('jwt', $token, 60 * 720); //30days
 
             DB::commit();
-            return ApiResponse::success('success');
+            return ApiResponse::success(
+                'success',
+                ['user' => $user, 'token' => $token]
+            )->withCookie($cookie);
         } catch (\Exception $e) {
             DB::rollback();
             return ApiResponse::failure($e->getMessage(), $e, [], 400);

@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
-use App\traits\SimpleTokenGeneratorTrait;
+use App\Traits\SimpleTokenGeneratorTrait;
 use App\Notifications\EmailTokenVerification;
 use App\Notifications\TestNotification;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -85,7 +85,7 @@ class EmailVerification extends Model
             'token' => $this->generateToken()
         ]);
 
-        $emailVerification->notify(new EmailTokenVerification());
+        // $emailVerification->notify(new EmailTokenVerification());
 
         return $emailVerification;
     }
