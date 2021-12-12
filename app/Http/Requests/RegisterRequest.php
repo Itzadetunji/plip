@@ -49,6 +49,7 @@ class RegisterRequest extends FormRequest
             ],
             'phone'         => "phone|nullable|unique:users,phone",
             'phone_country' => "required_with:phone",
+            'device_name'   => 'required|string',
         ];
     }
 
