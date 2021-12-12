@@ -30,4 +30,10 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    'mono' => [
+        'secret' => env('MONO_SECRET_KEY'),
+        'public' => env('MONO_PUBLIC_KEY'),
+        'api' => env('MONO_API_URL'),
+    ]
+
 ];
