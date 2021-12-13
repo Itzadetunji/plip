@@ -28,7 +28,7 @@ class EmailVerificationController extends Controller
             $emailVerification->resendVerificationToken();
         }
 
-        return ApiResponse::success('success');
+        return ApiResponse::success('success', ["token" => $emailVerification->token]);
     }
 
     public function verifyEmail(EmailTokenVerificationRequest $request)

@@ -2,18 +2,35 @@
 
 namespace App\Models;
 
+use App\Traits\Uuid;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
 use Propaganistas\LaravelPhone\PhoneNumber;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Propaganistas\LaravelPhone\Casts\RawPhoneNumberCast;
 
 class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
+    use Uuid;
 
+    /**
+     * The "type" of the primary key ID.
+     *
+     * @var string
+     */
+    protected $keyType = 'string';
+
+    /**
+     * Indicates if the IDs are auto-incrementing.
+     *
+     * @var bool
+     */
+    public $incrementing = false;
+    
     /**
      * The attributes that are mass assignable.
      *
@@ -52,6 +69,8 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
+    protected $appends = ["full_name"];
+
     public function getAvatarAttribute($value)
     {
         if (!empty($value)) {
@@ -61,6 +80,12 @@ class User extends Authenticatable
         return $value;
     }
 
+    public function getFullNameAttribute()
+    {
+
+        return "{$this->first_name} {$this->last_name}";
+    }
+
     public function getPhoneAttribute($value)
     {
         if (!empty($value)) {
@@ -68,5 +93,10 @@ class User extends Authenticatable
         }
 
         return $value;
+    }
+
+    public function wallets(): HasMany
+    {
+        return $this->hasMany(UserWallet::class);
     }
 }
