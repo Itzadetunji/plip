@@ -3,7 +3,7 @@
 namespace App\Services\Mono;
 
 use GuzzleHttp\Client;
-use App\Services\HttpResponseModel;
+use App\Responders\HttpResponseModel;
 use GuzzleHttp\Exception\GuzzleException;
 
 class MonoClient
@@ -96,11 +96,6 @@ class MonoClient
             $this->query([]);
         }
         $this->_uri = "{$this->_uri}?{$this->_query}";
-        // dd($this->client->request(
-        //     $this->_method,
-        //     $this->_uri,
-        //     $_config
-        // ));
 
         try {
             $response = $this->client->request(
@@ -157,22 +152,26 @@ class MonoClient
         return $response;
     }
 
-    public function getTransactions(string $account): HttpResponseModel
+    public function getTransactions(string $account, array $filter = []): HttpResponseModel
     {
         $response = $this
             ->method('GET')
             ->uri("/accounts/{$account}/transactions")
+            ->query($filter)
             ->send();
 
         return $response;
     }
 
-    public function getStatements(string $account, string $period = "last6months"): HttpResponseModel
+    public function getStatements(string $account, string $period = "last6months", string $output = "json"): HttpResponseModel
     {
         $response = $this
             ->method('GET')
             ->uri("/accounts/{$account}/statement")
-            ->query(["period" => $period])
+            ->query([
+                "period" => $period,
+                "output" => $output
+            ])
             ->send();
 
         return $response;

@@ -32,6 +32,7 @@ return [
 
     'mono' => [
         'secret' => env('MONO_SECRET_KEY'),
+        'webhook' => env('MONO_WEBHOOK_SECRET'),
         'public' => env('MONO_PUBLIC_KEY'),
         'api' => env('MONO_API_URL'),
     ]
