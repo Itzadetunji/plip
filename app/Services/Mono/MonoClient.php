@@ -44,8 +44,7 @@ class MonoClient
 
     private function query(array $query)
     {
-        $parseQuery = $this->_method == 'get' ? array_merge(['access_key' => $this->apiToken], $query) : $query;
-        $this->_query = http_build_query($parseQuery);
+        $this->_query = http_build_query($query);
         return $this;
     }
 

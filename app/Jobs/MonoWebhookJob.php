@@ -2,15 +2,18 @@
 
 namespace App\Jobs;
 
-use App\Enums\MonoEventType;
 use App\Models\UserWallet;
-use App\Notifications\WalletInformationUpdate;
+use App\Enums\MonoEventType;
+use App\Enums\UserWalletStatus;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldBeUnique;
+use App\Services\Mono\MonoService;
+use App\Models\UserWalletTransaction;
+use Illuminate\Queue\SerializesModels;
+use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Queue\SerializesModels;
+use App\Notifications\WalletInformationUpdate;
+use Illuminate\Contracts\Queue\ShouldBeUnique;
 
 class MonoWebhookJob implements ShouldQueue
 {
@@ -31,25 +34,25 @@ class MonoWebhookJob implements ShouldQueue
      *
      * @return void
      */
-    public function handle()
+    public function handle(MonoService $monoService)
     {
         $data = $this->payload["data"]["account"];
-        $data["status"] = $this->payload["data"]['meta']['data_status'];
+        $data["account_number"] = $data["accountNumber"];
         $data["connection"] = $this->payload["data"]['meta']['auth_method'];
         $data["institution"] = collect($data["institution"]);
-        
+
         $userWallet = UserWallet::updateOrCreate(["account_id" => $data["_id"]], $data);
 
-        switch ($this->payload["event"]) {
-            case MonoEventType::UPDATED()->value:
-                if (!empty($userWallet->user)) {
-                    $userWallet->user->notify(new WalletInformationUpdate($userWallet));
-                }
-                break;
+        if (!empty($userWallet)) {
+            switch ($this->payload["event"]) {
+                case MonoEventType::UPDATED()->value:
+                    dispatch(new ProcessMonoTransactionsJob($userWallet, $this->payload["event"]));
+                    break;
 
-            default:
-                # code...
-                break;
+                default:
+                    # code...
+                    break;
+            }
         }
     }
 }

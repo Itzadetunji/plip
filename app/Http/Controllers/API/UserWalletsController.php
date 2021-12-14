@@ -2,12 +2,17 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Http\Controllers\Controller;
-use App\Http\Requests\TransactionFilterRequest;
 use App\Models\UserWallet;
+use Illuminate\Support\Str;
+use Illuminate\Http\Request;
 use App\Responders\ApiResponse;
 use App\Services\Mono\MonoService;
-use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use App\Models\UserWalletTransaction;
+use Illuminate\Support\LazyCollection;
+use App\Jobs\ProcessMonoTransactionsJob;
+use App\Http\Requests\TransactionFilterRequest;
+use App\Models\ExpenseCategory;
 
 class UserWalletsController extends Controller
 {
@@ -38,30 +43,5 @@ class UserWalletsController extends Controller
         $response = $monoService->syncWallet(request()->user(), $userWallet);
 
         return $response->toHttpResponse();
-    }
-
-    public function latestTransactions(UserWallet $userWallet, MonoService $monoService)
-    {
-        $this->authorize("view", $userWallet);
-
-        return $monoService->getTransactions(
-            request()->user(),
-            $userWallet,
-            [
-                "limit" => 10,
-                "paginate" => false,
-            ]
-        )->toHttpResponse();
-    }
-
-    public function getTransactions(TransactionFilterRequest $request, UserWallet $userWallet, MonoService $monoService)
-    {
-        $this->authorize("view", $userWallet);
-
-        return $monoService->getTransactions(
-            $request->user(),
-            $userWallet,
-            array_filter($request->validated())
-        )->toHttpResponse();
     }
 }

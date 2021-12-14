@@ -21,12 +21,15 @@ class CreateUserWalletsTable extends Migration
             $table->string("name")->nullable();
             $table->string("type")->nullable();
             $table->string("currency")->nullable();
-            $table->string("accountNumber")->nullable();
+            $table->string("account_number")->nullable();
             $table->double("balance")->nullable();
             $table->string("bvn")->nullable();
             $table->json("institution")->nullable();
             $table->string("status")->default("NOT AVAILABLE");
             $table->string("connection")->nullable();
+            $table->bigInteger("total_credits")->nullable();
+            $table->bigInteger("total_debits")->nullable();
+            $table->bigInteger("transactions_count")->nullable();
             $table->timestamp("last_synced")->nullable();
             $table->timestamps();
         });
