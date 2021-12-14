@@ -17,6 +17,7 @@ class CreateExpenseCategoriesTable extends Migration
             $table->id();
             $table->string("name");
             $table->string("icon")->nullable();
+            $table->json("keywords")->nullable();
             $table->boolean("enabled")->default(true);
             $table->timestamps();
         });

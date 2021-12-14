@@ -26,10 +26,12 @@ class TransactionFilterRequest extends FormRequest
         return [
             "narration" => "nullable|string",
             "paginate"  => "nullable|boolean",
+            "page"      => "nullable|integer",
             "limit"     => "nullable|integer",
             "type"      => "nullable|string",
             "start"     => "nullable|date_format:d-m-Y",
             "end"       => "nullable|date_format:d-m-Y",
+            "category"  => "nullable|string"
         ];
     }
 }

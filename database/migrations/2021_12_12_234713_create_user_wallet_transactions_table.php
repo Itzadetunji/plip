@@ -15,8 +15,8 @@ class CreateUserWalletTransactionsTable extends Migration
     {
         Schema::create('user_wallet_transactions', function (Blueprint $table) {
             $table->id();
-            $table->foreignId("user_wallets_id")->nullable()->index()->constrained("user_wallets");
-            $table->string("wallet_id")->index();
+            $table->foreignId("user_wallet_id")->nullable()->index()->constrained("user_wallets");
+            $table->string("transaction_id")->index();
             $table->string("type");
             $table->double("amount");
             $table->double("balance");

@@ -8,4 +8,16 @@ use Illuminate\Database\Eloquent\Model;
 class ExpenseCategory extends Model
 {
     use HasFactory;
+
+    protected $fillable = [
+        "name",
+        "keywords",
+        "icon",
+        "enabled"
+    ];
+    
+
+    protected $casts = [
+        "keywords" => "array",
+    ];
 }

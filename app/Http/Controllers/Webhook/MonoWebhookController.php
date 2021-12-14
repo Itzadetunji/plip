@@ -12,7 +12,6 @@ class MonoWebhookController extends Controller
 {
     public function __invoke(Request $request)
     {
-        info(json_encode($request->all(), JSON_PRETTY_PRINT));
         WebhookUpdates::create([
             "event_type" => $request->all()["event"],
             "dump" => collect($request->all())

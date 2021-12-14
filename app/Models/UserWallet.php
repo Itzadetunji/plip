@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Laravel\Scout\Searchable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Pivot;
@@ -19,13 +20,16 @@ class UserWallet extends Model
         "name",
         "type",
         "currency",
-        "accountNumber",
+        "account_number",
         "balance",
         "bvn",
         "institution",
         "status",
         "connection",
         "last_synced",
+        "total_credits",
+        "total_debits",
+        "transactions_count",
     ];
 
 
@@ -36,11 +40,54 @@ class UserWallet extends Model
 
     public function transactions(): HasMany
     {
-        return $this->hasMany(UserWalletTransaction::class, "wallet_id", "account_id");
+        return $this->hasMany(UserWalletTransaction::class);
     }
 
-    public function weeklyMetrics()
+
+    public function scopeGetAllTransactions($query, $filterData): object
     {
-        // $transactions = $this->transactions()
+        $transactions = UserWalletTransaction::where("user_wallet_id", $this->id);
+
+        if ($filter = $filterData->type) {
+            if ($filter === 'debit') {
+                $transactions = $transactions->where('type', 'debit');
+            } else {
+                $transactions = $transactions->where('type', 'credit');
+            }
+        }
+
+        if ($filter = $filterData->category) {
+            $category = ExpenseCategory::find($filter);
+
+            if (!empty($category)) {
+                // foreach ($category->keywords as $key => $value) {
+                //     $transactions = $transactions->orWhere('narration', 'LIKE', "%{$value}%");
+                // }
+                $transactions = $transactions->where('narration', 'LIKE', "%{$category->keywords[0]}%");
+                for ($i = 1; $i < count($category->keywords); $i++) {
+                    $transactions = $transactions->orWhere('narration', 'LIKE', "%{$category->keywords[$i]}%");
+                }
+            }
+        }
+
+        if ($filter = $filterData->narration) {
+            $transactions = $transactions->where('narration', 'LIKE', "%{$filter}%");
+        }
+
+        if ($filter = $filterData->start_from) {
+            $transactions = $transactions->whereDate('date', '>', Carbon::parse($filter));
+        }
+
+        if ($filter = $filterData->end_to) {
+            $transactions = $transactions->whereDate('date', '<', Carbon::parse($filter));
+        }
+
+        if ($filter = $filterData->amount) {
+            $transactions = $transactions->where('amount', $filter);
+        }
+
+        $paginate = $filterData->limit ?? 10;
+
+        return $transactions->paginate($paginate);
     }
 }

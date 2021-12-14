@@ -1,15 +1,19 @@
 <?php
 
-use App\Http\Controllers\API\Auth\EmailVerificationController;
-use App\Http\Controllers\API\Auth\LoginController;
-use App\Http\Controllers\API\Auth\LogoutController;
-use App\Http\Controllers\API\Auth\RegisterController;
-use App\Http\Controllers\API\UserWalletsController;
+use App\Models\UserWallet;
+use Illuminate\Http\Request;
 use App\Services\Mono\MonoClient;
 use Illuminate\Auth\Events\Logout;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Broadcast;
+use App\Notifications\WalletInformationUpdate;
+use App\Http\Controllers\API\Auth\LoginController;
+use App\Http\Controllers\API\Auth\LogoutController;
+use App\Http\Controllers\API\UserWalletsController;
+use App\Http\Controllers\API\Auth\RegisterController;
+use App\Http\Controllers\API\Auth\EmailVerificationController;
+use App\Http\Controllers\API\ExpenseCategoryController;
+use App\Http\Controllers\API\UserWalletTransactionsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -37,33 +41,14 @@ Route::prefix('auth')->name('auth.')->group(function () {
 Route::middleware("auth:sanctum")->group(function () {
     //channel broadcast routes
     Broadcast::routes();
-
+    Route::apiResource("expense_categories", ExpenseCategoryController::class)->only('index');
     Route::prefix('wallets')->name('wallets.')->group(function () {
         Route::get('/', [UserWalletsController::class, "index"])->name("index");
         Route::get('/{userWallet:account_id}', [UserWalletsController::class, "show"])->name("show");
-        
+
         Route::post('/connect', [UserWalletsController::class, "connect"])->name("connect");
         Route::get('/{userWallet:account_id}/sync', [UserWalletsController::class, "sync"])->name("sync");
-        Route::get('/{userWallet:account_id}/latest', [UserWalletsController::class, "latestTransactions"])->name("transactions.latest");
-        Route::post('/{userWallet:account_id}/transactions', [UserWalletsController::class, "getTransactions"])->name("transactions.all");
+        Route::get('/{userWallet:account_id}/transactions/latest', [UserWalletTransactionsController::class, "latestTransactions"])->name("transactions.latest");
+        Route::get('/{userWallet:account_id}/transactions', [UserWalletTransactionsController::class, "getTransactions"])->name("transactions.all");
     });
-});
-
-Route::post('/testMono', function (Request $request, MonoClient $monoClient) {
-    $data = $monoClient->getExchangeToken($request->code);
-    // $data = $monoClient->getAccount($request->account);
-    // $data = $monoClient->getTransactions($request->account);
-    // $data = $monoClient->getStatements($request->account, "last6months");
-    // $data = $monoClient->getCreditHistory($request->account);
-    // $data = $monoClient->getDebitHistory($request->account);
-    // $data = $monoClient->getAverageIncome($request->account);
-    // $data = $monoClient->getIdentity($request->account);
-    // $data = $monoClient->syncData($request->account);
-    // $data = $monoClient->getWalletBalance();
-    // $data = $monoClient->getInstitutions();
-    // $data = $monoClient->lookupBusiness($request->business_name);
-    // $data = $monoClient->lookupShareholders($request->company_id);
-
-    // return $data;
-    dd($data);
 });
