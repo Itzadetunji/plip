@@ -48,8 +48,8 @@ class UserWalletsController extends Controller
             request()->user(),
             $userWallet,
             [
-                "limit" => 20,
-                "paginated" => false,
+                "limit" => 10,
+                "paginate" => false,
             ]
         )->toHttpResponse();
     }
